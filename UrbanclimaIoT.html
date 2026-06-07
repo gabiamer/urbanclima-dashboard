@@ -296,7 +296,6 @@ body {
   display:flex; align-items:flex-start; justify-content:space-between;
   padding-top: 24px;
 }
-#temp-block {}
 #temp-main {
   font-family: var(--f-disp);
   font-size: 96px; font-weight:400; line-height:1;
@@ -425,7 +424,6 @@ body {
   min-width:150px;
 }
 .rc-icon { font-size:20px; flex-shrink:0; }
-.rc-right {}
 .rc-temp { font-size:18px; font-weight:300; letter-spacing:-0.03em; }
 .rc-name { font-size:10px; color:var(--ink2); margin-top:1px; }
 .rc-cond { font-size:9px; color:var(--ink3); }
@@ -501,9 +499,261 @@ body {
 ::-webkit-scrollbar { width:3px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--rim2); border-radius:2px; }
+
+/* ══════════════════════════════════════════════════
+   BOTTOM NAV (mobile only, hidden on desktop)
+══════════════════════════════════════════════════ */
+#bottom-nav {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════════
+   MOBILE DRAWER (sidebar as slide-up sheet)
+══════════════════════════════════════════════════ */
+#drawer-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#drawer-overlay.open { opacity: 1; }
+
+#left-panel.drawer-mode {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 400;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  width: min(280px, 85vw);
+}
+#left-panel.drawer-mode.open {
+  transform: translateX(0);
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — TABLET (≤900px)
+══════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root { --left-w: 240px; }
+
+  #temp-main { font-size: 72px !important; }
+  #condition-text { font-size: 20px !important; }
+
+  .sensor-card { padding: 10px 12px; }
+  .sc-val { font-size: 18px !important; }
+
+  #top-nav { padding: 16px 20px 0; }
+  #hero-area { padding: 0 20px; }
+  #forecast-area { padding: 0 20px 16px; }
+  #detail-inner { padding: 0 20px; }
+
+  .detail-section { padding: 12px 0; }
+  .detail-section:not(:first-child) { padding-left: 16px; }
+  .detail-section:last-child { padding-right: 0; }
+  .detail-section:not(:last-child) { padding-right: 16px; }
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (≤640px)
+══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Layout: single column, sidebar hidden */
+  html, body { overflow: hidden; height: 100%; }
+
+  #app {
+    grid-template-columns: 1fr;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* sidebar becomes drawer */
+  #left-panel {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 400;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    width: min(280px, 85vw);
+    border-right: 1px solid var(--rim2);
+  }
+  #left-panel.open {
+    transform: translateX(0);
+  }
+
+  #drawer-overlay {
+    display: block;
+    pointer-events: none;
+  }
+  #drawer-overlay.open {
+    pointer-events: auto;
+  }
+
+  /* right panel fills everything */
+  #right-panel {
+    grid-column: 1;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 60px; /* space for bottom nav */
+  }
+
+  /* top nav compact */
+  #hamburger-btn { display: flex !important; }
+
+  #top-nav {
+    padding: 14px 16px 0;
+    flex-shrink: 0;
+  }
+  .nav-location-name { font-size: 12px; }
+  .nav-location-date { display: none; }
+
+  /* hero area scrollable on mobile */
+  #hero-area {
+    padding: 0 16px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  #hero-area::-webkit-scrollbar { display: none; }
+
+  /* temp hero */
+  #temp-row {
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+  }
+  #temp-main { font-size: 80px !important; }
+  #desc-block {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  #condition-text { font-size: 22px !important; margin-bottom: 4px; }
+  #desc-subtitle { display: none; }
+
+  /* recent block: horizontal scroll strip instead of overlay */
+  #recent-block {
+    position: static !important;
+    padding: 0;
+    margin-top: 12px;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  #recent-block::-webkit-scrollbar { display: none; }
+  .recent-label { display: none; }
+  #recent-cards {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .recent-card {
+    flex-shrink: 0;
+    min-width: 130px;
+  }
+
+  /* sensor row: 2x2 grid */
+  #sensor-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .sensor-card { padding: 12px; }
+  .sc-val { font-size: 22px !important; }
+
+  /* forecast strip */
+  #forecast-area {
+    padding: 0 16px 12px;
+    flex-shrink: 0;
+  }
+  #forecast-strip { overflow-x: auto; }
+  .fc-day { min-width: 52px; }
+
+  /* detail panel: horizontal scroll */
+  #detail-panel {
+    flex-shrink: 0;
+  }
+  #detail-inner {
+    padding: 0 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  #detail-inner::-webkit-scrollbar { display: none; }
+  .detail-section {
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+
+  /* bottom nav */
+  #bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 60px;
+    background: rgba(9,14,28,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--rim);
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+  .bn-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 16px; border-radius: 12px;
+    background: none; border: none; cursor: pointer;
+    color: var(--ink3); font-family: var(--f-body);
+    transition: all 0.2s;
+    flex: 1;
+  }
+  .bn-btn.active { color: var(--ink); background: rgba(255,255,255,0.07); }
+  .bn-icon { font-size: 20px; line-height: 1; }
+  .bn-label { font-size: 9px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* alerts as fixed banner at top */
+  #mobile-alerts-bar {
+    display: flex !important;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 6px 16px;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid var(--rim);
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  #mobile-alerts-bar::-webkit-scrollbar { display: none; }
+}
+
 </style>
 </head>
 <body>
+
+<!-- ── DRAWER OVERLAY ── -->
+<div id="drawer-overlay"></div>
+
+<!-- ── BOTTOM NAV (mobile) ── -->
+<div id="bottom-nav">
+  <button class="bn-btn active" id="bn-home" onclick="mobileNav('home')">
+    <span class="bn-icon">🌡️</span>
+    <span class="bn-label">Clima</span>
+  </button>
+  <button class="bn-btn" id="bn-zones" onclick="mobileNav('zones')">
+    <span class="bn-icon">📍</span>
+    <span class="bn-label">Zonas</span>
+  </button>
+  <button class="bn-btn" id="bn-alerts" onclick="mobileNav('alerts')">
+    <span class="bn-icon">🔔</span>
+    <span class="bn-label">Alertas</span>
+  </button>
+</div>
 
 <!-- ── SPLASH ── -->
 <div id="splash">
@@ -565,9 +815,15 @@ body {
       <div class="cloud-shape c4"></div>
     </div>
 
+    <!-- Mobile alerts bar -->
+    <div id="mobile-alerts-bar" style="display:none;">
+      <span id="mobile-no-alerts" style="font-size:10px;color:var(--ok);white-space:nowrap;flex-shrink:0;">Sin alertas</span>
+    </div>
+
     <!-- Top nav -->
     <div id="top-nav">
       <div class="nav-location">
+        <button id="hamburger-btn" onclick="toggleDrawer()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:34px;height:34px;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:16px;margin-right:8px;flex-shrink:0;">☰</button>
         <span class="nav-location-pin">📍</span>
         <span class="nav-location-name" id="active-zone-name">—</span>
         <span class="nav-location-date" id="current-date">—</span>
@@ -1118,6 +1374,93 @@ function connectMQTT() {
 ═══════════════════════════════════════════ */
 $('current-date').textContent = '( ' + dateStr() + ' )';
 connectMQTT();
+setupMobileResponsive();
+
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════════════ */
+function isMobile() { return window.innerWidth <= 640; }
+
+function setupMobileResponsive() {
+  function apply() {
+    const mobile = isMobile();
+    const ham = $('hamburger-btn');
+    if (ham) ham.style.display = mobile ? 'flex' : 'none';
+    const mbar = $('mobile-alerts-bar');
+    if (mbar) mbar.style.display = mobile ? 'flex' : 'none';
+  }
+  apply();
+  window.addEventListener('resize', apply);
+}
+
+function toggleDrawer() {
+  const panel   = $('left-panel');
+  const overlay = $('drawer-overlay');
+  const isOpen  = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    overlay.style.pointerEvents = 'none';
+  } else {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    overlay.style.pointerEvents = 'auto';
+  }
+}
+
+$('drawer-overlay').addEventListener('click', () => {
+  $('left-panel').classList.remove('open');
+  $('drawer-overlay').classList.remove('open');
+  $('drawer-overlay').style.pointerEvents = 'none';
+});
+
+function mobileNav(tab) {
+  ['home','zones','alerts'].forEach(t => {
+    const btn = $('bn-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  if (tab === 'zones' || tab === 'alerts') {
+    toggleDrawer();
+    // reset to home after drawer is used
+    setTimeout(() => mobileNav('home'), 400);
+  }
+}
+
+/* patch: also close drawer after selecting a zone on mobile */
+const _origSetActive = setActiveZone;
+setActiveZone = function(topic) {
+  _origSetActive(topic);
+  if (isMobile()) {
+    $('left-panel').classList.remove('open');
+    $('drawer-overlay').classList.remove('open');
+    $('drawer-overlay').style.pointerEvents = 'none';
+  }
+};
+
+/* patch: sync mobile alerts bar */
+const _origRenderAlerts = renderAlerts;
+renderAlerts = function() {
+  _origRenderAlerts();
+  const mbar = $('mobile-alerts-bar');
+  if (!mbar) return;
+  mbar.querySelectorAll('.alert-tag').forEach(e => e.remove());
+  let total = 0;
+  Object.values(alertsMap).forEach(({name, alerts}) => {
+    alerts.forEach(a => {
+      total++;
+      const tag = document.createElement('span');
+      tag.className = 'alert-tag ' + a.cls;
+      tag.style.flexShrink = '0';
+      tag.style.fontSize = '9px';
+      tag.style.padding = '3px 8px';
+      const icon = a.cls==='crit' ? '⚠' : '○';
+      tag.innerHTML = icon + ' ' + a.txt;
+      mbar.appendChild(tag);
+    });
+  });
+  const noAlert = $('mobile-no-alerts');
+  if (noAlert) noAlert.style.display = total===0 ? 'block' : 'none';
+};
 </script>
 </body>
 </html>
