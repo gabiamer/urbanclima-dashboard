@@ -554,7 +554,6 @@
 
     /* ══════════════════════════════
    MAIN CONTENT AREA
-   This is the hero — flex-col, centered content
 ══════════════════════════════ */
     #main-content {
       position: relative;
@@ -624,7 +623,7 @@
     }
 
     /* ══════════════════════════════
-   4 BIG SENSOR CARDS — THE STAR
+   4 BIG SENSOR CARDS
 ══════════════════════════════ */
     #sensor-grid {
       display: grid;
@@ -739,49 +738,6 @@
       color: var(--crit);
     }
 
-    /* secondary metrics inside BME280 card */
-    .bc-subs {
-      display: flex;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    .bc-sub {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .bc-sub-val {
-      font-size: 16px;
-      font-weight: 300;
-      letter-spacing: -.02em;
-      transition: color .4s;
-    }
-
-    .bc-sub-val.ok {
-      color: var(--ink);
-    }
-
-    .bc-sub-val.warn {
-      color: var(--warn);
-    }
-
-    .bc-sub-val.crit {
-      color: var(--crit);
-    }
-
-    .bc-sub-val.dim {
-      color: var(--ink2);
-    }
-
-    .bc-sub-lbl {
-      font-size: 7px;
-      color: var(--ink3);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
     .bc-bar {
       height: 3px;
       background: rgba(255, 255, 255, .07);
@@ -795,6 +751,88 @@
       border-radius: 2px;
       transition: width .8s cubic-bezier(.34, 1, .64, 1);
     }
+
+    /* ══════════════════════════════
+   BME280 — SUB-METRIC CELLS
+   Replaces the old .bc-subs/.bc-sub
+══════════════════════════════ */
+    .bc-cells {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .bc-cell {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 9px;
+      padding: 8px 10px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: border-color .3s;
+    }
+
+    .bc-cell:hover {
+      border-color: rgba(255, 255, 255, .13);
+    }
+
+    /* tint the cell border when the value is in warn/crit */
+    .bc-cell.warn {
+      border-color: var(--warn-b);
+      background: var(--warn-a);
+    }
+
+    .bc-cell.crit {
+      border-color: var(--crit-b);
+      background: var(--crit-a);
+    }
+
+    .bc-cell-lbl {
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink3);
+    }
+
+    .bc-cell-val {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: -.03em;
+      line-height: 1;
+      transition: color .4s;
+    }
+
+    .bc-cell-val.ok  { color: var(--ink); }
+    .bc-cell-val.warn { color: var(--warn); }
+    .bc-cell-val.crit { color: var(--crit); }
+    .bc-cell-val.dim  { color: var(--ink2); }
+
+    .bc-cell-unit {
+      font-size: 8px;
+      color: var(--ink3);
+      letter-spacing: .04em;
+    }
+
+    .bc-cell-badge {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      width: fit-content;
+    }
+
+    .bc-cell-badge.ok   { background: var(--ok-a);   border-color: var(--ok-b);   color: var(--ok); }
+    .bc-cell-badge.warn { background: var(--warn-a);  border-color: var(--warn-b);  color: var(--warn); }
+    .bc-cell-badge.crit { background: var(--crit-a);  border-color: var(--crit-b);  color: var(--crit); }
+    .bc-cell-badge.dim  { background: rgba(255,255,255,.04); border-color: var(--rim); color: var(--ink3); }
 
     /* ── HISTORIAL STRIP ── */
     #hist-area {
@@ -972,6 +1010,10 @@
       .big-card {
         padding: 14px 14px 11px;
       }
+
+      .bc-cell-val {
+        font-size: 17px;
+      }
     }
 
     @media(max-width:820px) {
@@ -1050,6 +1092,14 @@
       #bottom-nav {
         display: flex !important;
       }
+
+      .bc-cells {
+        gap: 5px;
+      }
+
+      .bc-cell-val {
+        font-size: 16px;
+      }
     }
 
     @media(max-width:520px) {
@@ -1073,12 +1123,12 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .bc-subs {
-        gap: 8px;
+      .bc-cell-val {
+        font-size: 14px;
       }
 
-      .bc-sub-val {
-        font-size: 13px;
+      .bc-cell {
+        padding: 6px 8px 5px;
       }
     }
 
@@ -1271,22 +1321,28 @@
             </div>
             <div class="bc-status ok" id="bc-temp-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-temp-bar" style="width:0%;background:linear-gradient(90deg,#4facfe,#f093fb)">
-              </div>
+              <div class="bc-fill" id="bc-temp-bar" style="width:0%;background:linear-gradient(90deg,#4facfe,#f093fb)"></div>
             </div>
-            <!-- humedad, presión, altitud como sub-metrics -->
-            <div class="bc-subs" style="margin-top:8px;">
-              <div class="bc-sub">
-                <div class="bc-sub-val ok" id="bc-hum">—</div>
-                <div class="bc-sub-lbl">% Humedad</div>
+
+            <!-- ── Humedad · Presión · Altitud como celdas independientes ── -->
+            <div class="bc-cells">
+              <div class="bc-cell" id="bc-hum-cell">
+                <div class="bc-cell-lbl">Humedad</div>
+                <div class="bc-cell-val ok" id="bc-hum">—</div>
+                <div class="bc-cell-unit">%</div>
+                <div class="bc-cell-badge ok" id="bc-hum-b">—</div>
               </div>
-              <div class="bc-sub">
-                <div class="bc-sub-val dim" id="bc-pres">—</div>
-                <div class="bc-sub-lbl">hPa Presión</div>
+              <div class="bc-cell" id="bc-pres-cell">
+                <div class="bc-cell-lbl">Presión</div>
+                <div class="bc-cell-val dim" id="bc-pres">—</div>
+                <div class="bc-cell-unit">hPa</div>
+                <div class="bc-cell-badge dim" id="bc-pres-b">—</div>
               </div>
-              <div class="bc-sub">
-                <div class="bc-sub-val dim" id="bc-alt">—</div>
-                <div class="bc-sub-lbl">m Altitud</div>
+              <div class="bc-cell" id="bc-alt-cell">
+                <div class="bc-cell-lbl">Altitud</div>
+                <div class="bc-cell-val dim" id="bc-alt">—</div>
+                <div class="bc-cell-unit">m</div>
+                <div class="bc-cell-badge dim" id="bc-alt-b">fijo</div>
               </div>
             </div>
           </div>
@@ -1301,8 +1357,7 @@
             </div>
             <div class="bc-status ok" id="bc-gas-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-gas-bar" style="width:0%;background:linear-gradient(90deg,#84fab0,#8fd3f4)">
-              </div>
+              <div class="bc-fill" id="bc-gas-bar" style="width:0%;background:linear-gradient(90deg,#84fab0,#8fd3f4)"></div>
             </div>
           </div>
 
@@ -1316,8 +1371,7 @@
             </div>
             <div class="bc-status ok" id="bc-uv-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-uv-bar" style="width:0%;background:linear-gradient(90deg,#f6d365,#fda085)">
-              </div>
+              <div class="bc-fill" id="bc-uv-bar" style="width:0%;background:linear-gradient(90deg,#f6d365,#fda085)"></div>
             </div>
           </div>
 
@@ -1331,8 +1385,7 @@
             </div>
             <div class="bc-status ok" id="bc-noise-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-noise-bar" style="width:0%;background:linear-gradient(90deg,#a18cd1,#fbc2eb)">
-              </div>
+              <div class="bc-fill" id="bc-noise-bar" style="width:0%;background:linear-gradient(90deg,#a18cd1,#fbc2eb)"></div>
             </div>
           </div>
 
@@ -1379,11 +1432,11 @@
     /* ═══ EVALUATORS ═══ */
     const ev = {
       temp: v => v > 35 ? { c: 'crit', t: 'crítico' } : v > 28 ? { c: 'warn', t: 'alerta' } : { c: 'ok', t: 'normal' },
-      hum: v => v > 85 ? { c: 'crit', t: 'crítico' } : v > 70 ? { c: 'warn', t: 'alta' } : { c: 'ok', t: 'normal' },
+      hum:  v => v > 85 ? { c: 'crit', t: 'crítica' } : v > 70 ? { c: 'warn', t: 'alta' } : { c: 'ok', t: 'normal' },
       pres: v => v < 800 ? { c: 'crit', t: 'baja' } : v < 850 ? { c: 'warn', t: 'atención' } : { c: 'ok', t: 'normal' },
-      gas: v => v <= 0 ? { c: 'warn', t: 'sin datos' } : v < 10 ? { c: 'crit', t: 'crítico' } : v < 50 ? { c: 'warn', t: 'malo' } : v < 100 ? { c: 'warn', t: 'regular' } : { c: 'ok', t: 'bueno' },
-      uv: v => v >= 8 ? { c: 'crit', t: 'extremo' } : v >= 6 ? { c: 'crit', t: 'muy alto' } : v >= 3 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'bajo' },
-      noise: v => v >= 90 ? { c: 'crit', t: 'peligroso' } : v >= 70 ? { c: 'warn', t: 'molesto' } : v >= 55 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'normal' },
+      gas:  v => v <= 0 ? { c: 'warn', t: 'sin datos' } : v < 10 ? { c: 'crit', t: 'crítico' } : v < 50 ? { c: 'warn', t: 'malo' } : v < 100 ? { c: 'warn', t: 'regular' } : { c: 'ok', t: 'bueno' },
+      uv:   v => v >= 8 ? { c: 'crit', t: 'extremo' } : v >= 6 ? { c: 'crit', t: 'muy alto' } : v >= 3 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'bajo' },
+      noise:v => v >= 90 ? { c: 'crit', t: 'peligroso' } : v >= 70 ? { c: 'warn', t: 'molesto' } : v >= 55 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'normal' },
     };
     function condition(d) {
       const t = d.temp_c || 0, h = d.humidity || 0, uv = d.uv_index || 0, n = d.noise_db || 0;
@@ -1396,7 +1449,7 @@
       return 'Condición normal';
     }
     function worst(d) {
-      const cs = [ev.temp(d.temp_c || 0).c, ev.hum(d.humidity || 0).c, ev.pres(d.pressure || 0).c, ev.gas(d.gas_kohm || 0).c, ev.uv(d.uv_index || 0).c, ev.noise(d.noise_db || 0).c];
+      const cs = [ev.temp(d.temp_c||0).c, ev.hum(d.humidity||0).c, ev.pres(d.pressure||0).c, ev.gas(d.gas_kohm||0).c, ev.uv(d.uv_index||0).c, ev.noise(d.noise_db||0).c];
       return cs.includes('crit') ? 'crit' : cs.includes('warn') ? 'warn' : 'ok';
     }
 
@@ -1412,6 +1465,22 @@
     }
     function setBar(id, pct) { const el = $(id); if (el) el.style.width = clmp(pct, 0, 100) + '%'; }
     function setStatus(id, res) { const el = $(id); if (!el) return; el.textContent = res.t; el.className = 'bc-status ' + res.c; }
+
+    /* helper: update a bc-cell block (wrapper + value + badge) */
+    function setCell(cellId, valId, badgeId, valStr, res) {
+      const cell = $(cellId);
+      if (cell) {
+        // reset cell tint classes
+        cell.classList.remove('ok', 'warn', 'crit');
+        if (res.c !== 'ok') cell.classList.add(res.c);
+      }
+      setM(valId, valStr, res.c === 'ok' ? (cellId === 'bc-alt-cell' ? 'dim' : 'ok') : res.c);
+      const badge = $(badgeId);
+      if (badge) {
+        badge.textContent = res.t;
+        badge.className = 'bc-cell-badge ' + (cellId === 'bc-alt-cell' ? 'dim' : res.c);
+      }
+    }
 
     /* ═══ RENDER HERO ═══ */
     function renderHero() {
@@ -1435,15 +1504,15 @@
       $('t-lo').textContent = 'L ' + (t - 4).toFixed(0) + '°';
       $('cond-text').textContent = condition(d);
 
-      // BME280 card
+      // BME280 main
       const rt = ev.temp(t);
       setM('bc-temp', t.toFixed(1), rt.c); setStatus('bc-temp-s', rt);
       setBar('bc-temp-bar', clmp((t - 10) / 40 * 100, 0, 100));
 
-      const rh = ev.hum(h), rp = ev.pres(pr);
-      setM('bc-hum', h.toFixed(1), rh.c);
-      setM('bc-pres', pr.toFixed(0), rp.c);
-      setM('bc-alt', al.toFixed(0), 'dim');
+      // BME280 cells
+      setCell('bc-hum-cell',  'bc-hum',  'bc-hum-b',  h.toFixed(1),  ev.hum(h));
+      setCell('bc-pres-cell', 'bc-pres', 'bc-pres-b', pr.toFixed(0), ev.pres(pr));
+      setCell('bc-alt-cell',  'bc-alt',  'bc-alt-b',  al.toFixed(0), { c: 'ok', t: 'fijo' });
 
       // BME680
       const rg = ev.gas(g);
@@ -1475,9 +1544,9 @@
       el.id = 'zc-' + zid; el.className = 'zone-card ' + w; el.dataset.topic = topic;
       el.innerHTML = `<div class="zc-head"><div class="zc-name">${name}</div><span class="zc-pill ${w}" id="zp-${zid}">${w === 'crit' ? 'Crítico' : w === 'warn' ? 'Alerta' : 'Normal'}</span></div>
   <div class="zc-nums">
-    <div class="zc-n"><div class="zc-v ${ev.temp(d.temp_c || 0).c}" id="zt-${zid}">${(d.temp_c || 0).toFixed(1)}</div><div class="zc-u">°C</div></div>
-    <div class="zc-n"><div class="zc-v ${ev.hum(d.humidity || 0).c}" id="zh-${zid}">${(d.humidity || 0).toFixed(0)}</div><div class="zc-u">%HR</div></div>
-    <div class="zc-n"><div class="zc-v ${ev.noise(d.noise_db || 0).c}" id="zn-${zid}">${(d.noise_db || 0).toFixed(0)}</div><div class="zc-u">dB</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.temp(d.temp_c||0).c}" id="zt-${zid}">${(d.temp_c||0).toFixed(1)}</div><div class="zc-u">°C</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.hum(d.humidity||0).c}" id="zh-${zid}">${(d.humidity||0).toFixed(0)}</div><div class="zc-u">%HR</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.noise(d.noise_db||0).c}" id="zn-${zid}">${(d.noise_db||0).toFixed(0)}</div><div class="zc-u">dB</div></div>
   </div>`;
       el.addEventListener('click', () => setActive(topic));
       return el;
@@ -1488,9 +1557,9 @@
       const el = $('zc-' + zid);
       if (el) { el.className = 'zone-card ' + (active === topic ? 'active ' : '') + w; }
       const pp = $('zp-' + zid); if (pp) { pp.className = 'zc-pill ' + w; pp.textContent = w === 'crit' ? 'Crítico' : w === 'warn' ? 'Alerta' : 'Normal'; }
-      const tv = $('zt-' + zid); if (tv) { tv.textContent = (d.temp_c || 0).toFixed(1); tv.className = 'zc-v ' + ev.temp(d.temp_c || 0).c; }
-      const hv = $('zh-' + zid); if (hv) { hv.textContent = (d.humidity || 0).toFixed(0); hv.className = 'zc-v ' + ev.hum(d.humidity || 0).c; }
-      const nv = $('zn-' + zid); if (nv) { nv.textContent = (d.noise_db || 0).toFixed(0); nv.className = 'zc-v ' + ev.noise(d.noise_db || 0).c; }
+      const tv = $('zt-' + zid); if (tv) { tv.textContent = (d.temp_c||0).toFixed(1); tv.className = 'zc-v ' + ev.temp(d.temp_c||0).c; }
+      const hv = $('zh-' + zid); if (hv) { hv.textContent = (d.humidity||0).toFixed(0); hv.className = 'zc-v ' + ev.hum(d.humidity||0).c; }
+      const nv = $('zn-' + zid); if (nv) { nv.textContent = (d.noise_db||0).toFixed(0); nv.className = 'zc-v ' + ev.noise(d.noise_db||0).c; }
     }
 
     /* ═══ ALERTS ═══ */
@@ -1528,7 +1597,7 @@
 
     /* ═══ UPDATE FROM MQTT ═══ */
     function updateZone(topic, data) {
-      ['temp_c', 'humidity', 'pressure', 'altitude', 'gas_kohm', 'uv_index', 'noise_db'].forEach(k => data[k] = flt(data[k]));
+      ['temp_c','humidity','pressure','altitude','gas_kohm','uv_index','noise_db'].forEach(k => data[k] = flt(data[k]));
       zones[topic] = data;
 
       if (!zoneIds[topic]) {
@@ -1545,12 +1614,12 @@
       const name = ZONE_NAMES[topic] || data.node_id || topic;
       const zid = zoneIds[topic];
       const alerts = [];
-      [['Temperatura', (data.temp_c || 0).toFixed(1) + '°C', ev.temp(data.temp_c || 0)],
-      ['Humedad', (data.humidity || 0).toFixed(0) + '%', ev.hum(data.humidity || 0)],
-      ['Presión', (data.pressure || 0).toFixed(0) + 'hPa', ev.pres(data.pressure || 0)],
-      ['VOC', (data.gas_kohm || 0).toFixed(1) + 'kΩ', ev.gas(data.gas_kohm || 0)],
-      ['UV', (data.uv_index || 0).toFixed(2), ev.uv(data.uv_index || 0)],
-      ['Ruido', (data.noise_db || 0).toFixed(1) + 'dB', ev.noise(data.noise_db || 0)]
+      [['Temperatura', (data.temp_c||0).toFixed(1)+'°C',   ev.temp(data.temp_c||0)],
+       ['Humedad',     (data.humidity||0).toFixed(0)+'%',   ev.hum(data.humidity||0)],
+       ['Presión',     (data.pressure||0).toFixed(0)+'hPa', ev.pres(data.pressure||0)],
+       ['VOC',         (data.gas_kohm||0).toFixed(1)+'kΩ',  ev.gas(data.gas_kohm||0)],
+       ['UV',          (data.uv_index||0).toFixed(2),        ev.uv(data.uv_index||0)],
+       ['Ruido',       (data.noise_db||0).toFixed(1)+'dB',   ev.noise(data.noise_db||0)]
       ].forEach(([lbl, val, res]) => {
         if (res.c !== 'ok') alerts.push({ c: res.c, t: `${lbl} ${val} — ${res.t}` });
       });
@@ -1592,7 +1661,7 @@
       $('drawer-overlay').style.pointerEvents = 'none';
     });
     function mobileTab(tab) {
-      ['home', 'zones', 'alerts'].forEach(t => { const b = $('bn-' + t); if (b) b.classList.toggle('active', t === tab); });
+      ['home','zones','alerts'].forEach(t => { const b = $('bn-'+t); if (b) b.classList.toggle('active', t === tab); });
       if (tab === 'zones' || tab === 'alerts') { toggleDrawer(); setTimeout(() => mobileTab('home'), 350); }
     }
     function initMobile() {
@@ -1603,12 +1672,12 @@
 
     /* ═══ HISTORIAL SUPABASE ═══ */
     const CHART_DEFS = [
-      { key: 'temp_c', label: 'Temperatura', unit: '°C', color: '#4facfe', dec: 1 },
-      { key: 'humidity', label: 'Humedad', unit: '%', color: '#43e5f7', dec: 1 },
-      { key: 'pressure', label: 'Presión', unit: 'hPa', color: '#667eea', dec: 0 },
-      { key: 'uv_index', label: 'UV', unit: '', color: '#f6d365', dec: 2 },
-      { key: 'gas_kohm', label: 'VOC', unit: 'kΩ', color: '#84fab0', dec: 1 },
-      { key: 'noise_db', label: 'Ruido', unit: 'dB', color: '#a18cd1', dec: 1 },
+      { key: 'temp_c',   label: 'Temperatura', unit: '°C', color: '#4facfe', dec: 1 },
+      { key: 'humidity', label: 'Humedad',      unit: '%',  color: '#43e5f7', dec: 1 },
+      { key: 'pressure', label: 'Presión',      unit: 'hPa',color: '#667eea', dec: 0 },
+      { key: 'uv_index', label: 'UV',           unit: '',   color: '#f6d365', dec: 2 },
+      { key: 'gas_kohm', label: 'VOC',          unit: 'kΩ', color: '#84fab0', dec: 1 },
+      { key: 'noise_db', label: 'Ruido',        unit: 'dB', color: '#a18cd1', dec: 1 },
     ];
     const hCharts = {};
 
