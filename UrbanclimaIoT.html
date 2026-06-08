@@ -576,6 +576,8 @@ body {
   #history-wrapper { padding:16px; max-height:220px; }
   .charts-strip { grid-template-columns: repeat(2,1fr); gap:8px; }
 }
+
+#recent-block { display: none !important; }
 </style>
 </head>
 <body>
@@ -1445,7 +1447,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Primera lectura al cargar (delay 2s para que el dashboard esté listo)
   setTimeout(() => {
     simulate();
-    setInterval(simulate, 10000);
+    setInterval(simulate, 60000);
   }, 2000);
 
 })();
