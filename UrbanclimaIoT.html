@@ -874,6 +874,7 @@
       border-top: 1px solid var(--rim);
       padding: 14px 28px 16px;
       flex-shrink: 0;
+      overflow-x: auto;
     }
 
     .hist-head {
@@ -926,6 +927,7 @@
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 8px;
+      min-width: 700px;
     }
 
     .hc-card {
@@ -1097,6 +1099,7 @@
 
       .charts-row {
         grid-template-columns: repeat(3, 1fr);
+        min-width: 700px;
       }
 
       #hist-area {
@@ -1151,6 +1154,7 @@
 
       .charts-row {
         grid-template-columns: repeat(2, 1fr);
+        min-width: 700px;
       }
 
       .bc-cell-val {
@@ -1239,6 +1243,16 @@
 
     ::-webkit-scrollbar-thumb {
       background: var(--rim2);
+      border-radius: 2px;
+    }
+
+
+    #hist-area::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    #hist-area::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.13);
       border-radius: 2px;
     }
   </style>
