@@ -1081,14 +1081,23 @@ function renderHero() {
     (data.noise_db||0).toFixed(1), ev.noise(data.noise_db||0), Math.max(0,(data.noise_db||0)-30), 90);
 
   // detail panel
-  setDetail2('d-temp', 'd-temp-s', 'd-temp-bar', (data.temp_c||0).toFixed(1), ev.temp(data.temp_c||0),   clamp((data.temp_c-10)/40*100,0,100));
-  setDetail2('d-hum',  'd-hum-s',  'd-hum-bar',  (data.humidity||0).toFixed(1), ev.humidity(data.humidity||0), clamp(data.humidity||0,0,100));
-  setDetail2('d-pres', 'd-pres-s', 'd-pres-bar', (data.pressure||0).toFixed(0), ev.pressure(data.pressure||0), clamp((data.pressure-800)/250*100,0,100));
-  const altEl=$('d-alt'); if(altEl){altEl.textContent=(data.altitude||0).toFixed(0); altEl.className='ds-m2-val neutral';}
-  const abEl=$('d-alt-bar'); if(abEl) abEl.style.width=clamp((data.altitude||0)/4000*100,0,100)+'%';
-  setDetail2('d-gas',  'd-gas-s',  'd-gas-bar',  (data.gas_kohm||0).toFixed(1), ev.gas(data.gas_kohm||0),   clamp((data.gas_kohm||0)/300*100,0,100));
-  setDetail2('d-uv',   'd-uv-s',   'd-uv-bar',   (data.uv_index||0).toFixed(2), ev.uv(data.uv_index||0),   clamp((data.uv_index||0)/15*100,0,100));
-  setDetail2('d-noise','d-noise-s','d-noise-bar', (data.noise_db||0).toFixed(1), ev.noise(data.noise_db||0), clamp(((data.noise_db||0)-30)/90*100,0,100));
+  // Convertir todos a float por si vienen como string desde MQTT
+  const t  = toFloat(data.temp_c);
+  const h  = toFloat(data.humidity);
+  const pr = toFloat(data.pressure);
+  const al = toFloat(data.altitude);
+  const g  = toFloat(data.gas_kohm);
+  const uv = toFloat(data.uv_index);
+  const nb = toFloat(data.noise_db);
+
+  setDetail2('d-temp', 'd-temp-s', 'd-temp-bar', t.toFixed(1),  ev.temp(t),     clamp((t-10)/40*100,0,100));
+  setDetail2('d-hum',  'd-hum-s',  'd-hum-bar',  h.toFixed(1),  ev.humidity(h), clamp(h,0,100));
+  setDetail2('d-pres', 'd-pres-s', 'd-pres-bar', pr.toFixed(0), ev.pressure(pr),clamp((pr-800)/250*100,0,100));
+  const altEl=$('d-alt'); if(altEl){altEl.textContent=al.toFixed(0); altEl.className='ds-m2-val neutral';}
+  const abEl=$('d-alt-bar'); if(abEl) abEl.style.width=clamp(al/4000*100,0,100)+'%';
+  setDetail2('d-gas',  'd-gas-s',  'd-gas-bar',  g.toFixed(1),  ev.gas(g),      clamp(g/300*100,0,100));
+  setDetail2('d-uv',   'd-uv-s',   'd-uv-bar',   uv.toFixed(2), ev.uv(uv),      clamp(uv/15*100,0,100));
+  setDetail2('d-noise','d-noise-s','d-noise-bar', nb.toFixed(1), ev.noise(nb),   clamp((nb-30)/90*100,0,100));
 
   // forecast
   buildForecast(tempVal);
