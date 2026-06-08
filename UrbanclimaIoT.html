@@ -579,7 +579,48 @@ body {
 
 #recent-block { display: none !important; }
 
-#detail-panel { display: none !important; }
+#detail-panel { display: block; }
+
+/* ── Detail panel rediseñado: filas horizontales con barras ── */
+.ds-m2 {
+  margin-bottom: 8px;
+}
+.ds-m2:last-child { margin-bottom: 0; }
+.ds-m2-header {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-bottom: 4px;
+}
+.ds-m2-lbl {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink3);
+  flex: 1; min-width: 0;
+}
+.ds-m2-val {
+  font-size: 18px; font-weight: 300; letter-spacing: -0.03em; line-height: 1;
+  transition: color 0.4s;
+}
+.ds-m2-val.ok     { color: var(--ink); }
+.ds-m2-val.warn   { color: var(--warn); }
+.ds-m2-val.crit   { color: var(--crit); }
+.ds-m2-val.neutral{ color: var(--ink2); }
+.ds-m2-unit {
+  font-size: 9px; color: var(--ink3);
+}
+.ds-m2-status {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.06em;
+  margin-left: auto;
+}
+.ds-m2-status.ok   { color: var(--ok); }
+.ds-m2-status.warn { color: var(--warn); }
+.ds-m2-status.crit { color: var(--crit); }
+.ds-m2-bar {
+  height: 2px; background: rgba(255,255,255,0.07);
+  border-radius: 2px; overflow: hidden;
+}
+.ds-m2-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.34,1,0.64,1);
+}
 </style>
 </head>
 <body>
@@ -680,8 +721,8 @@ body {
         </div>
       </div>
 
-      <!-- Sensor cards (4 sensores) -->
-      <div id="sensor-row" style="opacity:0; transition:opacity 0.6s 0.1s;">
+      <!-- Sensor cards OCULTAS — reemplazadas por detail-panel rediseñado -->
+      <div id="sensor-row" style="display:none;">
         <!-- BME280 -->
         <div class="sensor-card" id="sc-bme280">
           <div class="sc-icon">🌡️</div>
@@ -736,68 +777,101 @@ body {
       </div>
     </div>
 
-    <!-- Detail panel -->
+    <!-- Detail panel — rediseñado como filas horizontales con barras -->
     <div id="detail-panel" style="opacity:0; transition:opacity 0.6s 0.3s;">
       <div id="detail-inner">
-        <!-- BME280 full -->
+
+        <!-- BME280 -->
         <div class="detail-section">
-          <div class="ds-title">🌡️ BME280 · Temp + Humedad</div>
+          <div class="ds-title">🌡️ BME280</div>
           <div class="ds-metrics">
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-temp">—</div>
-              <div class="ds-m-lbl">Temperatura</div>
-              <div class="ds-m-status ok" id="d-temp-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Temperatura</span>
+                <span class="ds-m2-val ok" id="d-temp">—</span>
+                <span class="ds-m2-unit">°C</span>
+                <span class="ds-m2-status ok" id="d-temp-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-temp-bar" style="width:0%;background:linear-gradient(90deg,#4facfe,#f093fb)"></div></div>
             </div>
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-hum">—</div>
-              <div class="ds-m-lbl">Humedad %</div>
-              <div class="ds-m-status ok" id="d-hum-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Humedad</span>
+                <span class="ds-m2-val ok" id="d-hum">—</span>
+                <span class="ds-m2-unit">%</span>
+                <span class="ds-m2-status ok" id="d-hum-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-hum-bar" style="width:0%;background:linear-gradient(90deg,#43e5f7,#43b8f5)"></div></div>
             </div>
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-pres">—</div>
-              <div class="ds-m-lbl">Presión hPa</div>
-              <div class="ds-m-status ok" id="d-pres-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Presión</span>
+                <span class="ds-m2-val ok" id="d-pres">—</span>
+                <span class="ds-m2-unit">hPa</span>
+                <span class="ds-m2-status ok" id="d-pres-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-pres-bar" style="width:0%;background:linear-gradient(90deg,#667eea,#764ba2)"></div></div>
             </div>
-            <div class="ds-m">
-              <div class="ds-m-val neutral" id="d-alt">—</div>
-              <div class="ds-m-lbl">Altitud msnm</div>
-              <div class="ds-m-status" id="d-alt-s"></div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Altitud</span>
+                <span class="ds-m2-val neutral" id="d-alt">—</span>
+                <span class="ds-m2-unit">msnm</span>
+                <span class="ds-m2-status" id="d-alt-s"></span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill" id="d-alt-bar" style="width:0%;background:linear-gradient(90deg,#a8edea,#fed6e3)"></div></div>
             </div>
           </div>
         </div>
+
         <!-- BME680 -->
         <div class="detail-section">
-          <div class="ds-title">💨 BME680 · Calidad de Aire</div>
+          <div class="ds-title">💨 BME680</div>
           <div class="ds-metrics">
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-gas">—</div>
-              <div class="ds-m-lbl">VOC kΩ</div>
-              <div class="ds-m-status ok" id="d-gas-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">VOC</span>
+                <span class="ds-m2-val ok" id="d-gas">—</span>
+                <span class="ds-m2-unit">kΩ</span>
+                <span class="ds-m2-status ok" id="d-gas-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-gas-bar" style="width:0%;background:linear-gradient(90deg,#84fab0,#8fd3f4)"></div></div>
             </div>
           </div>
         </div>
+
         <!-- GUVAS12SD -->
         <div class="detail-section">
-          <div class="ds-title">☀️ GUVAS12SD · UV</div>
+          <div class="ds-title">☀️ GUVAS12SD</div>
           <div class="ds-metrics">
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-uv">—</div>
-              <div class="ds-m-lbl">Índice UV</div>
-              <div class="ds-m-status ok" id="d-uv-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Índice UV</span>
+                <span class="ds-m2-val ok" id="d-uv">—</span>
+                <span class="ds-m2-unit">UV</span>
+                <span class="ds-m2-status ok" id="d-uv-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-uv-bar" style="width:0%;background:linear-gradient(90deg,#f6d365,#fda085)"></div></div>
             </div>
           </div>
         </div>
+
         <!-- Ruido -->
         <div class="detail-section">
-          <div class="ds-title">🔊 Ruido Ambiental</div>
+          <div class="ds-title">🔊 Ruido</div>
           <div class="ds-metrics">
-            <div class="ds-m">
-              <div class="ds-m-val ok" id="d-noise">—</div>
-              <div class="ds-m-lbl">Nivel dB</div>
-              <div class="ds-m-status ok" id="d-noise-s">—</div>
+            <div class="ds-m2">
+              <div class="ds-m2-header">
+                <span class="ds-m2-lbl">Nivel</span>
+                <span class="ds-m2-val ok" id="d-noise">—</span>
+                <span class="ds-m2-unit">dB</span>
+                <span class="ds-m2-status ok" id="d-noise-s">—</span>
+              </div>
+              <div class="ds-m2-bar"><div class="ds-m2-fill ok" id="d-noise-bar" style="width:0%;background:linear-gradient(90deg,#a18cd1,#fbc2eb)"></div></div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -980,7 +1054,7 @@ function renderHero() {
   $('temp-row').style.opacity    = '1';
   $('sensor-row').style.opacity  = '1';
   $('forecast-area').style.opacity = '1';
-  $('detail-panel').style.opacity  = '1';
+  $('detail-panel').style.opacity  = '1'; $('sensor-row').style.display = 'none';
   $('empty-hero').style.display    = 'none';
 
   // location
@@ -1007,13 +1081,14 @@ function renderHero() {
     (data.noise_db||0).toFixed(1), ev.noise(data.noise_db||0), Math.max(0,(data.noise_db||0)-30), 90);
 
   // detail panel
-  setDetail('d-temp', 'd-temp-s', (data.temp_c||0).toFixed(1)+'°C', ev.temp(data.temp_c||0));
-  setDetail('d-hum',  'd-hum-s',  (data.humidity||0).toFixed(1)+'%', ev.humidity(data.humidity||0));
-  setDetail('d-pres', 'd-pres-s', (data.pressure||0).toFixed(0)+'', ev.pressure(data.pressure||0));
-  $('d-alt').textContent = (data.altitude||0).toFixed(0);
-  setDetail('d-gas',  'd-gas-s',  (data.gas_kohm||0).toFixed(1)+'', ev.gas(data.gas_kohm||0));
-  setDetail('d-uv',   'd-uv-s',   (data.uv_index||0).toFixed(2)+'', ev.uv(data.uv_index||0));
-  setDetail('d-noise','d-noise-s',(data.noise_db||0).toFixed(1)+'dB', ev.noise(data.noise_db||0));
+  setDetail2('d-temp', 'd-temp-s', 'd-temp-bar', (data.temp_c||0).toFixed(1), ev.temp(data.temp_c||0),   clamp((data.temp_c-10)/40*100,0,100));
+  setDetail2('d-hum',  'd-hum-s',  'd-hum-bar',  (data.humidity||0).toFixed(1), ev.humidity(data.humidity||0), clamp(data.humidity||0,0,100));
+  setDetail2('d-pres', 'd-pres-s', 'd-pres-bar', (data.pressure||0).toFixed(0), ev.pressure(data.pressure||0), clamp((data.pressure-800)/250*100,0,100));
+  const altEl=$('d-alt'); if(altEl){altEl.textContent=(data.altitude||0).toFixed(0); altEl.className='ds-m2-val neutral';}
+  const abEl=$('d-alt-bar'); if(abEl) abEl.style.width=clamp((data.altitude||0)/4000*100,0,100)+'%';
+  setDetail2('d-gas',  'd-gas-s',  'd-gas-bar',  (data.gas_kohm||0).toFixed(1), ev.gas(data.gas_kohm||0),   clamp((data.gas_kohm||0)/300*100,0,100));
+  setDetail2('d-uv',   'd-uv-s',   'd-uv-bar',   (data.uv_index||0).toFixed(2), ev.uv(data.uv_index||0),   clamp((data.uv_index||0)/15*100,0,100));
+  setDetail2('d-noise','d-noise-s','d-noise-bar', (data.noise_db||0).toFixed(1), ev.noise(data.noise_db||0), clamp(((data.noise_db||0)-30)/90*100,0,100));
 
   // forecast
   buildForecast(tempVal);
@@ -1038,6 +1113,11 @@ function setCard(valId, statusId, barId, val, res, raw, max) {
 function setDetail(valId, statusId, val, res) {
   const vEl = $(valId); if (vEl) { vEl.textContent = val; vEl.className = 'ds-m-val ' + res.cls; }
   const sEl = $(statusId); if (sEl) { sEl.textContent = res.txt||''; sEl.className = 'ds-m-status ' + res.cls; }
+}
+function setDetail2(valId, statusId, barId, val, res, pct) {
+  const vEl = $(valId);    if (vEl) { vEl.textContent = val; vEl.className = 'ds-m2-val ' + res.cls; }
+  const sEl = $(statusId); if (sEl) { sEl.textContent = res.txt||''; sEl.className = 'ds-m2-status ' + res.cls; }
+  const bEl = $(barId);    if (bEl) bEl.style.width = clamp(pct,0,100) + '%';
 }
 
 function updateAtmosphere(data) {
