@@ -296,6 +296,7 @@ body {
   display:flex; align-items:flex-start; justify-content:space-between;
   padding-top: 24px;
 }
+#temp-block {}
 #temp-main {
   font-family: var(--f-disp);
   font-size: 96px; font-weight:400; line-height:1;
@@ -424,6 +425,7 @@ body {
   min-width:150px;
 }
 .rc-icon { font-size:20px; flex-shrink:0; }
+.rc-right {}
 .rc-temp { font-size:18px; font-weight:300; letter-spacing:-0.03em; }
 .rc-name { font-size:10px; color:var(--ink2); margin-top:1px; }
 .rc-cond { font-size:9px; color:var(--ink3); }
@@ -501,259 +503,82 @@ body {
 ::-webkit-scrollbar-thumb { background:var(--rim2); border-radius:2px; }
 
 /* ══════════════════════════════════════════════════
-   BOTTOM NAV (mobile only, hidden on desktop)
+   HISTORIAL REAL — SUPABASE
 ══════════════════════════════════════════════════ */
-#bottom-nav {
-  display: none;
+#history-wrapper {
+  position: relative; z-index: 10;
+  background: var(--panel);
+  border-top: 1px solid var(--rim);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  padding: 20px 32px 24px;
+  flex-shrink: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+#history-wrapper::-webkit-scrollbar { width:3px; }
+#history-wrapper::-webkit-scrollbar-thumb { background:var(--rim2); border-radius:2px; }
+
+.history-toprow {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 14px;
+}
+.history-eyebrow {
+  font-size:9px; font-weight:500; letter-spacing:0.2em;
+  text-transform:uppercase; color:var(--ink3);
+  display:flex; align-items:center; gap:8px;
+}
+#history-status {
+  font-size:9px; color:var(--ink3); letter-spacing:0.06em;
+}
+#history-refresh-btn {
+  font-size:10px; font-weight:500;
+  padding:4px 12px; border-radius:16px;
+  background:rgba(255,255,255,0.07); border:1px solid var(--rim);
+  color:var(--ink2); cursor:pointer; font-family:var(--f-body);
+  transition:all 0.2s;
+}
+#history-refresh-btn:hover { background:rgba(255,255,255,0.11); color:var(--ink); }
+#history-refresh-btn.loading { color:var(--ok); border-color:var(--ok-b); }
+
+.charts-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.hchart-card {
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--r2);
+  padding: 12px 14px 10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.hchart-header {
+  display:flex; align-items:baseline; justify-content:space-between;
+  margin-bottom: 10px;
+}
+.hchart-label {
+  font-size:9px; font-weight:500; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--ink3);
+}
+.hchart-last {
+  font-size:16px; font-weight:300; letter-spacing:-0.03em; color:var(--ink);
+}
+.hchart-unit { font-size:9px; color:var(--ink3); margin-left:2px; }
+.hchart-wrap { position:relative; height:60px; }
+.hchart-empty {
+  height:60px; display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:var(--ink3);
 }
 
-/* ══════════════════════════════════════════════════
-   MOBILE DRAWER (sidebar as slide-up sheet)
-══════════════════════════════════════════════════ */
-#drawer-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 300;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+@media(max-width:640px) {
+  #history-wrapper { padding:16px; max-height:220px; }
+  .charts-strip { grid-template-columns: repeat(2,1fr); gap:8px; }
 }
-#drawer-overlay.open { opacity: 1; }
-
-#left-panel.drawer-mode {
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 400;
-  transform: translateX(-100%);
-  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-  width: min(280px, 85vw);
-}
-#left-panel.drawer-mode.open {
-  transform: translateX(0);
-}
-
-/* ══════════════════════════════════════════════════
-   RESPONSIVE — TABLET (≤900px)
-══════════════════════════════════════════════════ */
-@media (max-width: 900px) {
-  :root { --left-w: 240px; }
-
-  #temp-main { font-size: 72px !important; }
-  #condition-text { font-size: 20px !important; }
-
-  .sensor-card { padding: 10px 12px; }
-  .sc-val { font-size: 18px !important; }
-
-  #top-nav { padding: 16px 20px 0; }
-  #hero-area { padding: 0 20px; }
-  #forecast-area { padding: 0 20px 16px; }
-  #detail-inner { padding: 0 20px; }
-
-  .detail-section { padding: 12px 0; }
-  .detail-section:not(:first-child) { padding-left: 16px; }
-  .detail-section:last-child { padding-right: 0; }
-  .detail-section:not(:last-child) { padding-right: 16px; }
-}
-
-/* ══════════════════════════════════════════════════
-   RESPONSIVE — MOBILE (≤640px)
-══════════════════════════════════════════════════ */
-@media (max-width: 640px) {
-
-  /* Layout: single column, sidebar hidden */
-  html, body { overflow: hidden; height: 100%; }
-
-  #app {
-    grid-template-columns: 1fr;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  /* sidebar becomes drawer */
-  #left-panel {
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    z-index: 400;
-    transform: translateX(-100%);
-    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-    width: min(280px, 85vw);
-    border-right: 1px solid var(--rim2);
-  }
-  #left-panel.open {
-    transform: translateX(0);
-  }
-
-  #drawer-overlay {
-    display: block;
-    pointer-events: none;
-  }
-  #drawer-overlay.open {
-    pointer-events: auto;
-  }
-
-  /* right panel fills everything */
-  #right-panel {
-    grid-column: 1;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding-bottom: 60px; /* space for bottom nav */
-  }
-
-  /* top nav compact */
-  #hamburger-btn { display: flex !important; }
-
-  #top-nav {
-    padding: 14px 16px 0;
-    flex-shrink: 0;
-  }
-  .nav-location-name { font-size: 12px; }
-  .nav-location-date { display: none; }
-
-  /* hero area scrollable on mobile */
-  #hero-area {
-    padding: 0 16px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  #hero-area::-webkit-scrollbar { display: none; }
-
-  /* temp hero */
-  #temp-row {
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 16px;
-  }
-  #temp-main { font-size: 80px !important; }
-  #desc-block {
-    text-align: left !important;
-    max-width: 100% !important;
-  }
-  #condition-text { font-size: 22px !important; margin-bottom: 4px; }
-  #desc-subtitle { display: none; }
-
-  /* recent block: horizontal scroll strip instead of overlay */
-  #recent-block {
-    position: static !important;
-    padding: 0;
-    margin-top: 12px;
-    flex-direction: row;
-    gap: 8px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-  #recent-block::-webkit-scrollbar { display: none; }
-  .recent-label { display: none; }
-  #recent-cards {
-    display: flex;
-    gap: 8px;
-    flex-wrap: nowrap;
-  }
-  .recent-card {
-    flex-shrink: 0;
-    min-width: 130px;
-  }
-
-  /* sensor row: 2x2 grid */
-  #sensor-row {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .sensor-card { padding: 12px; }
-  .sc-val { font-size: 22px !important; }
-
-  /* forecast strip */
-  #forecast-area {
-    padding: 0 16px 12px;
-    flex-shrink: 0;
-  }
-  #forecast-strip { overflow-x: auto; }
-  .fc-day { min-width: 52px; }
-
-  /* detail panel: horizontal scroll */
-  #detail-panel {
-    flex-shrink: 0;
-  }
-  #detail-inner {
-    padding: 0 16px;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-  #detail-inner::-webkit-scrollbar { display: none; }
-  .detail-section {
-    min-width: 140px;
-    flex-shrink: 0;
-  }
-
-  /* bottom nav */
-  #bottom-nav {
-    display: flex;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 200;
-    height: 60px;
-    background: rgba(9,14,28,0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--rim);
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 8px;
-  }
-  .bn-btn {
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 6px 16px; border-radius: 12px;
-    background: none; border: none; cursor: pointer;
-    color: var(--ink3); font-family: var(--f-body);
-    transition: all 0.2s;
-    flex: 1;
-  }
-  .bn-btn.active { color: var(--ink); background: rgba(255,255,255,0.07); }
-  .bn-icon { font-size: 20px; line-height: 1; }
-  .bn-label { font-size: 9px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
-
-  /* alerts as fixed banner at top */
-  #mobile-alerts-bar {
-    display: flex !important;
-    overflow-x: auto;
-    gap: 6px;
-    padding: 6px 16px;
-    background: rgba(0,0,0,0.3);
-    border-bottom: 1px solid var(--rim);
-    flex-shrink: 0;
-    -webkit-overflow-scrolling: touch;
-  }
-  #mobile-alerts-bar::-webkit-scrollbar { display: none; }
-}
-
 </style>
 </head>
 <body>
-
-<!-- ── DRAWER OVERLAY ── -->
-<div id="drawer-overlay"></div>
-
-<!-- ── BOTTOM NAV (mobile) ── -->
-<div id="bottom-nav">
-  <button class="bn-btn active" id="bn-home" onclick="mobileNav('home')">
-    <span class="bn-icon">🌡️</span>
-    <span class="bn-label">Clima</span>
-  </button>
-  <button class="bn-btn" id="bn-zones" onclick="mobileNav('zones')">
-    <span class="bn-icon">📍</span>
-    <span class="bn-label">Zonas</span>
-  </button>
-  <button class="bn-btn" id="bn-alerts" onclick="mobileNav('alerts')">
-    <span class="bn-icon">🔔</span>
-    <span class="bn-label">Alertas</span>
-  </button>
-</div>
 
 <!-- ── SPLASH ── -->
 <div id="splash">
@@ -815,15 +640,9 @@ body {
       <div class="cloud-shape c4"></div>
     </div>
 
-    <!-- Mobile alerts bar -->
-    <div id="mobile-alerts-bar" style="display:none;">
-      <span id="mobile-no-alerts" style="font-size:10px;color:var(--ok);white-space:nowrap;flex-shrink:0;">Sin alertas</span>
-    </div>
-
     <!-- Top nav -->
     <div id="top-nav">
       <div class="nav-location">
-        <button id="hamburger-btn" onclick="toggleDrawer()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;width:34px;height:34px;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:16px;margin-right:8px;flex-shrink:0;">☰</button>
         <span class="nav-location-pin">📍</span>
         <span class="nav-location-name" id="active-zone-name">—</span>
         <span class="nav-location-date" id="current-date">—</span>
@@ -978,7 +797,22 @@ body {
       </div>
     </div>
 
-  </div><!-- end right-panel -->
+  
+  <!-- ══════════════════════════════════════════════════
+       HISTORIAL REAL — SUPABASE (últimas 2 horas)
+       Aparece debajo del detail-panel, dentro del right-panel
+  ══════════════════════════════════════════════════ -->
+  <div id="history-wrapper">
+    <div class="history-toprow">
+      <div class="history-eyebrow">
+        📈 Historial real · últimas 2 horas
+        <span id="history-status">cargando…</span>
+      </div>
+      <button id="history-refresh-btn" onclick="loadHistory()">↻ actualizar</button>
+    </div>
+    <div class="charts-strip" id="charts-strip"></div>
+  </div>
+</div><!-- end right-panel -->
 </div><!-- end app -->
 
 <script>
@@ -1000,6 +834,7 @@ const ZONE_NAMES = {
   "urbanclima/zona1/cloud": "Zona 1 — UCB Tarija",
   "urbanclima/zona2/cloud": "Zona 2 — Centro",
   "urbanclima/zona3/cloud": "Zona 3 — Sur",
+  "urbanclima/zona2/cloud": "Zona 2 — Centro Tarija",
 };
 
 /* ═══════════════════════════════════════════
@@ -1374,93 +1209,245 @@ function connectMQTT() {
 ═══════════════════════════════════════════ */
 $('current-date').textContent = '( ' + dateStr() + ' )';
 connectMQTT();
-setupMobileResponsive();
-
-/* ═══════════════════════════════════════════
-   MOBILE RESPONSIVE
-═══════════════════════════════════════════ */
-function isMobile() { return window.innerWidth <= 640; }
-
-function setupMobileResponsive() {
-  function apply() {
-    const mobile = isMobile();
-    const ham = $('hamburger-btn');
-    if (ham) ham.style.display = mobile ? 'flex' : 'none';
-    const mbar = $('mobile-alerts-bar');
-    if (mbar) mbar.style.display = mobile ? 'flex' : 'none';
-  }
-  apply();
-  window.addEventListener('resize', apply);
-}
-
-function toggleDrawer() {
-  const panel   = $('left-panel');
-  const overlay = $('drawer-overlay');
-  const isOpen  = panel.classList.contains('open');
-  if (isOpen) {
-    panel.classList.remove('open');
-    overlay.classList.remove('open');
-    overlay.style.pointerEvents = 'none';
-  } else {
-    panel.classList.add('open');
-    overlay.classList.add('open');
-    overlay.style.pointerEvents = 'auto';
-  }
-}
-
-$('drawer-overlay').addEventListener('click', () => {
-  $('left-panel').classList.remove('open');
-  $('drawer-overlay').classList.remove('open');
-  $('drawer-overlay').style.pointerEvents = 'none';
-});
-
-function mobileNav(tab) {
-  ['home','zones','alerts'].forEach(t => {
-    const btn = $('bn-' + t);
-    if (btn) btn.classList.toggle('active', t === tab);
-  });
-  if (tab === 'zones' || tab === 'alerts') {
-    toggleDrawer();
-    // reset to home after drawer is used
-    setTimeout(() => mobileNav('home'), 400);
-  }
-}
-
-/* patch: also close drawer after selecting a zone on mobile */
-const _origSetActive = setActiveZone;
-setActiveZone = function(topic) {
-  _origSetActive(topic);
-  if (isMobile()) {
-    $('left-panel').classList.remove('open');
-    $('drawer-overlay').classList.remove('open');
-    $('drawer-overlay').style.pointerEvents = 'none';
-  }
-};
-
-/* patch: sync mobile alerts bar */
-const _origRenderAlerts = renderAlerts;
-renderAlerts = function() {
-  _origRenderAlerts();
-  const mbar = $('mobile-alerts-bar');
-  if (!mbar) return;
-  mbar.querySelectorAll('.alert-tag').forEach(e => e.remove());
-  let total = 0;
-  Object.values(alertsMap).forEach(({name, alerts}) => {
-    alerts.forEach(a => {
-      total++;
-      const tag = document.createElement('span');
-      tag.className = 'alert-tag ' + a.cls;
-      tag.style.flexShrink = '0';
-      tag.style.fontSize = '9px';
-      tag.style.padding = '3px 8px';
-      const icon = a.cls==='crit' ? '⚠' : '○';
-      tag.innerHTML = icon + ' ' + a.txt;
-      mbar.appendChild(tag);
-    });
-  });
-  const noAlert = $('mobile-no-alerts');
-  if (noAlert) noAlert.style.display = total===0 ? 'block' : 'none';
-};
 </script>
+
+<!-- ══════════════════════════════════════════════════
+     HISTORIAL REAL — SUPABASE + Chart.js
+══════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* ── Configuración Supabase ── */
+const SUPA = {
+  url:   "https://ooybbubqngqzqnnqondf.supabase.co",
+  key:   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9veWJidWJxbmdxenFubnFvbmRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4ODc5OTQsImV4cCI6MjA5NTQ2Mzk5NH0.YSLM75KSmLbGLd11BUk9sYTfd_r7yi7fP_3is2FUBIc",
+  table: "lecturas",
+  hours: 2,
+  limit: 500,
+};
+
+const CHART_DEFS = [
+  { key:'temp_c',   label:'Temperatura', unit:'°C',  color:'#4facfe', dec:1 },
+  { key:'humidity', label:'Humedad',     unit:'%',   color:'#43e5f7', dec:1 },
+  { key:'pressure', label:'Presión',     unit:'hPa', color:'#667eea', dec:0 },
+  { key:'uv_index', label:'UV',          unit:'',    color:'#f6d365', dec:2 },
+  { key:'gas_kohm', label:'VOC',         unit:'kΩ',  color:'#84fab0', dec:1 },
+  { key:'noise_db', label:'Ruido',       unit:'dB',  color:'#a18cd1', dec:1 },
+];
+
+const hCharts = {};
+
+async function loadHistory() {
+  const btn = document.getElementById('history-refresh-btn');
+  const statusEl = document.getElementById('history-status');
+  if (btn) { btn.classList.add('loading'); btn.textContent = '↻ cargando…'; }
+  if (statusEl) statusEl.textContent = 'consultando…';
+
+  try {
+    const since = new Date(Date.now() - SUPA.hours * 3600000).toISOString();
+    const url   = SUPA.url + '/rest/v1/' + SUPA.table
+      + '?select=fecha,temp_c,humidity,pressure,uv_index,gas_kohm,noise_db'
+      + '&fecha=gte.' + since
+      + '&order=fecha.asc'
+      + '&limit=' + SUPA.limit;
+
+    const res  = await fetch(url, { headers: { 'apikey': SUPA.key, 'Authorization': 'Bearer ' + SUPA.key } });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const rows = await res.json();
+
+    if (!rows || rows.length === 0) {
+      if (statusEl) statusEl.textContent = 'sin datos en las últimas 2h';
+      renderEmptyHistoryCharts();
+      return;
+    }
+
+    const labels = rows.map(r => {
+      const d = new Date(r.fecha);
+      return d.toLocaleTimeString('es-BO', {hour:'2-digit', minute:'2-digit'});
+    });
+
+    CHART_DEFS.forEach(def => {
+      const vals = rows.map(r => { const v = parseFloat(r[def.key]); return isNaN(v) ? null : parseFloat(v.toFixed(def.dec)); });
+      renderHistoryChart(def, labels, vals);
+    });
+
+    const last = rows[rows.length-1];
+    const lt   = new Date(last.fecha).toLocaleTimeString('es-BO',{hour:'2-digit',minute:'2-digit'});
+    if (statusEl) statusEl.textContent = rows.length + ' registros · último ' + lt;
+
+  } catch(e) {
+    console.error('[Supabase]', e);
+    if (statusEl) statusEl.textContent = 'error al consultar';
+  } finally {
+    if (btn) { btn.classList.remove('loading'); btn.textContent = '↻ actualizar'; }
+  }
+}
+
+function renderHistoryChart(def, labels, values) {
+  const grid = document.getElementById('charts-strip');
+  let card = document.getElementById('hchart-' + def.key);
+  if (!card) {
+    card = document.createElement('div');
+    card.className = 'hchart-card';
+    card.id = 'hchart-' + def.key;
+    card.innerHTML =
+      '<div class="hchart-header">' +
+        '<span class="hchart-label">' + def.label + '</span>' +
+        '<span><span class="hchart-last" id="hlast-' + def.key + '">—</span>' +
+        '<span class="hchart-unit">' + def.unit + '</span></span>' +
+      '</div>' +
+      '<div class="hchart-wrap"><canvas id="hcanvas-' + def.key + '"></canvas></div>';
+    grid.appendChild(card);
+  }
+
+  const lastVal = values.filter(v => v !== null).pop();
+  const lEl = document.getElementById('hlast-' + def.key);
+  if (lEl && lastVal !== undefined) lEl.textContent = lastVal.toFixed(def.dec);
+
+  const ctx = document.getElementById('hcanvas-' + def.key).getContext('2d');
+
+  if (hCharts[def.key]) {
+    hCharts[def.key].data.labels = labels;
+    hCharts[def.key].data.datasets[0].data = values;
+    hCharts[def.key].update('none');
+    return;
+  }
+
+  hCharts[def.key] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ data: values, borderColor: def.color, borderWidth: 1.5,
+        pointRadius: 0, tension: 0.4, fill: true,
+        backgroundColor: def.color + '18', spanGaps: true }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(9,14,28,0.92)', borderColor:'rgba(255,255,255,0.1)', borderWidth:1,
+          titleColor:'#8899bb', bodyColor:'#f0f4ff',
+          titleFont:{size:9}, bodyFont:{size:11,weight:'300'}, padding:8,
+          callbacks: { label: c => ' ' + (c.parsed.y !== null ? c.parsed.y.toFixed(def.dec) : '—') + def.unit }
+        }
+      },
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,0.04)',drawBorder:false}, ticks:{color:'#3d4f6e',font:{size:8},maxTicksLimit:5,maxRotation:0}, border:{display:false} },
+        y: { grid:{color:'rgba(255,255,255,0.04)',drawBorder:false}, ticks:{color:'#3d4f6e',font:{size:8},maxTicksLimit:3, callback: v => v.toFixed(def.dec)}, border:{display:false} }
+      }
+    }
+  });
+}
+
+function renderEmptyHistoryCharts() {
+  const grid = document.getElementById('charts-strip');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.values(hCharts).forEach(c => c.destroy());
+  CHART_DEFS.forEach(def => {
+    const card = document.createElement('div');
+    card.className = 'hchart-card';
+    card.innerHTML = '<div class="hchart-header"><span class="hchart-label">' + def.label + '</span></div><div class="hchart-empty">sin datos aún</div>';
+    grid.appendChild(card);
+  });
+}
+
+// Arrancar historial
+document.addEventListener('DOMContentLoaded', () => {
+  loadHistory();
+  setInterval(loadHistory, 30000);
+});
+</script>
+
+
+<script>
+/* ══════════════════════════════════════════════════
+   ZONA SIMULADA — Zona 2 Centro Tarija
+   Genera datos aleatorios cada 10 s para demostrar
+   escalabilidad del dashboard sin hardware extra.
+   Los datos se inyectan directamente a updateZone()
+   como si vinieran de MQTT.
+══════════════════════════════════════════════════ */
+(function startSimulatedZone() {
+  const TOPIC = "urbanclima/zona2/cloud";
+  let tick = 0;
+
+  // Valores base con variación realista
+  const base = {
+    temp_c:   22.5,
+    humidity: 58.0,
+    pressure: 846.0,
+    altitude: 1866.0,
+    uv_index: 0.8,
+    gas_kohm: 78.0,
+    noise_db: 44.0,
+  };
+
+  function rnd(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function simulate() {
+    tick++;
+
+    // Pequeñas variaciones cada ciclo
+    const temp     = parseFloat((base.temp_c   + rnd(-0.3, 0.3)).toFixed(2));
+    const humidity = parseFloat((base.humidity  + rnd(-1.0, 1.0)).toFixed(2));
+    const pressure = parseFloat((base.pressure  + rnd(-0.5, 0.5)).toFixed(2));
+    const altitude = parseFloat((base.altitude  + rnd(-2.0, 2.0)).toFixed(1));
+    const uv       = parseFloat((base.uv_index  + rnd(-0.05, 0.15)).toFixed(2));
+    const gas      = parseFloat((base.gas_kohm  + rnd(-3.0, 3.0)).toFixed(2));
+    const noise    = parseFloat((base.noise_db  + rnd(-2.0, 4.0)).toFixed(1));
+
+    // Drift lento para que los valores evolucionen con el tiempo
+    base.temp_c   += rnd(-0.05, 0.05);
+    base.humidity  += rnd(-0.1, 0.1);
+    base.gas_kohm  += rnd(-0.5, 0.5);
+    base.noise_db  += rnd(-0.3, 0.3);
+
+    // Mantener dentro de rangos físicos
+    base.temp_c   = Math.min(40, Math.max(15, base.temp_c));
+    base.humidity  = Math.min(95, Math.max(30, base.humidity));
+    base.gas_kohm  = Math.min(200, Math.max(10, base.gas_kohm));
+    base.noise_db  = Math.min(85, Math.max(30, base.noise_db));
+
+    // Evaluar estado
+    let estado = "Normal";
+    let alerta = false;
+    if (temp > 25)     { estado = "ALERTA: Temperatura alta"; alerta = true; }
+    if (humidity > 80) { estado = "ALERTA: Humedad alta"; alerta = true; }
+    if (gas < 50)      { estado = "ALERTA: Gas VOC bajo"; alerta = true; }
+    if (noise >= 70)   { estado = "ALERTA: Ruido molesto"; alerta = true; }
+
+    const data = {
+      node_id:   "Z2-UCB",
+      timestamp: tick * 10,
+      temp_c:    temp.toFixed(2),
+      humidity:  humidity.toFixed(2),
+      pressure:  pressure.toFixed(2),
+      altitude:  altitude.toFixed(1),
+      uv_index:  Math.max(0, uv).toFixed(2),
+      uv_cat:    uv < 3 ? "Bajo" : uv < 6 ? "Moderado" : "Alto",
+      gas_kohm:  Math.max(0, gas).toFixed(2),
+      noise_db:  Math.max(30, noise).toFixed(1),
+      estado:    estado,
+      alerta:    alerta,
+    };
+
+    // Inyectar igual que si viniera de MQTT
+    if (typeof updateZone === 'function') {
+      updateZone(TOPIC, data);
+    }
+  }
+
+  // Primera lectura al cargar (delay 2s para que el dashboard esté listo)
+  setTimeout(() => {
+    simulate();
+    setInterval(simulate, 10000);
+  }, 2000);
+
+})();
+</script>
+
 </body>
 </html>
