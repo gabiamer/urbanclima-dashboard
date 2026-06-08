@@ -805,10 +805,21 @@
       transition: color .4s;
     }
 
-    .bc-cell-val.ok  { color: var(--ink); }
-    .bc-cell-val.warn { color: var(--warn); }
-    .bc-cell-val.crit { color: var(--crit); }
-    .bc-cell-val.dim  { color: var(--ink2); }
+    .bc-cell-val.ok {
+      color: var(--ink);
+    }
+
+    .bc-cell-val.warn {
+      color: var(--warn);
+    }
+
+    .bc-cell-val.crit {
+      color: var(--crit);
+    }
+
+    .bc-cell-val.dim {
+      color: var(--ink2);
+    }
 
     .bc-cell-unit {
       font-size: 8px;
@@ -829,10 +840,29 @@
       width: fit-content;
     }
 
-    .bc-cell-badge.ok   { background: var(--ok-a);   border-color: var(--ok-b);   color: var(--ok); }
-    .bc-cell-badge.warn { background: var(--warn-a);  border-color: var(--warn-b);  color: var(--warn); }
-    .bc-cell-badge.crit { background: var(--crit-a);  border-color: var(--crit-b);  color: var(--crit); }
-    .bc-cell-badge.dim  { background: rgba(255,255,255,.04); border-color: var(--rim); color: var(--ink3); }
+    .bc-cell-badge.ok {
+      background: var(--ok-a);
+      border-color: var(--ok-b);
+      color: var(--ok);
+    }
+
+    .bc-cell-badge.warn {
+      background: var(--warn-a);
+      border-color: var(--warn-b);
+      color: var(--warn);
+    }
+
+    .bc-cell-badge.crit {
+      background: var(--crit-a);
+      border-color: var(--crit-b);
+      color: var(--crit);
+    }
+
+    .bc-cell-badge.dim {
+      background: rgba(255, 255, 255, .04);
+      border-color: var(--rim);
+      color: var(--ink3);
+    }
 
     /* ── HISTORIAL STRIP ── */
     #hist-area {
@@ -1321,7 +1351,8 @@
             </div>
             <div class="bc-status ok" id="bc-temp-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-temp-bar" style="width:0%;background:linear-gradient(90deg,#4facfe,#f093fb)"></div>
+              <div class="bc-fill" id="bc-temp-bar" style="width:0%;background:linear-gradient(90deg,#4facfe,#f093fb)">
+              </div>
             </div>
 
             <!-- ── Humedad · Presión · Altitud como celdas independientes ── -->
@@ -1357,7 +1388,8 @@
             </div>
             <div class="bc-status ok" id="bc-gas-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-gas-bar" style="width:0%;background:linear-gradient(90deg,#84fab0,#8fd3f4)"></div>
+              <div class="bc-fill" id="bc-gas-bar" style="width:0%;background:linear-gradient(90deg,#84fab0,#8fd3f4)">
+              </div>
             </div>
           </div>
 
@@ -1371,7 +1403,8 @@
             </div>
             <div class="bc-status ok" id="bc-uv-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-uv-bar" style="width:0%;background:linear-gradient(90deg,#f6d365,#fda085)"></div>
+              <div class="bc-fill" id="bc-uv-bar" style="width:0%;background:linear-gradient(90deg,#f6d365,#fda085)">
+              </div>
             </div>
           </div>
 
@@ -1385,7 +1418,8 @@
             </div>
             <div class="bc-status ok" id="bc-noise-s">—</div>
             <div class="bc-bar">
-              <div class="bc-fill" id="bc-noise-bar" style="width:0%;background:linear-gradient(90deg,#a18cd1,#fbc2eb)"></div>
+              <div class="bc-fill" id="bc-noise-bar" style="width:0%;background:linear-gradient(90deg,#a18cd1,#fbc2eb)">
+              </div>
             </div>
           </div>
 
@@ -1418,8 +1452,11 @@
     };
     const SUPA = {
       url: "https://ooybbubqngqzqnnqondf.supabase.co",
-      key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9veWJidWJxbmdxenFubnFvbmRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4ODc5OTQsImV4cCI6MjA5NTQ2Mzk5NH0.YSLM75KSmLbGLd11BUk9sYTfd_r7yi7fP_3is2FUBIc",
-      table: "lecturas", hours: 2, limit: 500,
+      key: "eyJ...",
+      table: "lecturas",
+      tsCol: "ts",   // ← nombre real de la columna timestamp
+      hours: 2,
+      limit: 500,
     };
 
     /* ═══ UTILS ═══ */
@@ -1432,11 +1469,11 @@
     /* ═══ EVALUATORS ═══ */
     const ev = {
       temp: v => v > 35 ? { c: 'crit', t: 'crítico' } : v > 28 ? { c: 'warn', t: 'alerta' } : { c: 'ok', t: 'normal' },
-      hum:  v => v > 85 ? { c: 'crit', t: 'crítica' } : v > 70 ? { c: 'warn', t: 'alta' } : { c: 'ok', t: 'normal' },
+      hum: v => v > 85 ? { c: 'crit', t: 'crítica' } : v > 70 ? { c: 'warn', t: 'alta' } : { c: 'ok', t: 'normal' },
       pres: v => v < 800 ? { c: 'crit', t: 'baja' } : v < 850 ? { c: 'warn', t: 'atención' } : { c: 'ok', t: 'normal' },
-      gas:  v => v <= 0 ? { c: 'warn', t: 'sin datos' } : v < 10 ? { c: 'crit', t: 'crítico' } : v < 50 ? { c: 'warn', t: 'malo' } : v < 100 ? { c: 'warn', t: 'regular' } : { c: 'ok', t: 'bueno' },
-      uv:   v => v >= 8 ? { c: 'crit', t: 'extremo' } : v >= 6 ? { c: 'crit', t: 'muy alto' } : v >= 3 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'bajo' },
-      noise:v => v >= 90 ? { c: 'crit', t: 'peligroso' } : v >= 70 ? { c: 'warn', t: 'molesto' } : v >= 55 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'normal' },
+      gas: v => v <= 0 ? { c: 'warn', t: 'sin datos' } : v < 10 ? { c: 'crit', t: 'crítico' } : v < 50 ? { c: 'warn', t: 'malo' } : v < 100 ? { c: 'warn', t: 'regular' } : { c: 'ok', t: 'bueno' },
+      uv: v => v >= 8 ? { c: 'crit', t: 'extremo' } : v >= 6 ? { c: 'crit', t: 'muy alto' } : v >= 3 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'bajo' },
+      noise: v => v >= 90 ? { c: 'crit', t: 'peligroso' } : v >= 70 ? { c: 'warn', t: 'molesto' } : v >= 55 ? { c: 'warn', t: 'moderado' } : { c: 'ok', t: 'normal' },
     };
     function condition(d) {
       const t = d.temp_c || 0, h = d.humidity || 0, uv = d.uv_index || 0, n = d.noise_db || 0;
@@ -1449,7 +1486,7 @@
       return 'Condición normal';
     }
     function worst(d) {
-      const cs = [ev.temp(d.temp_c||0).c, ev.hum(d.humidity||0).c, ev.pres(d.pressure||0).c, ev.gas(d.gas_kohm||0).c, ev.uv(d.uv_index||0).c, ev.noise(d.noise_db||0).c];
+      const cs = [ev.temp(d.temp_c || 0).c, ev.hum(d.humidity || 0).c, ev.pres(d.pressure || 0).c, ev.gas(d.gas_kohm || 0).c, ev.uv(d.uv_index || 0).c, ev.noise(d.noise_db || 0).c];
       return cs.includes('crit') ? 'crit' : cs.includes('warn') ? 'warn' : 'ok';
     }
 
@@ -1510,9 +1547,9 @@
       setBar('bc-temp-bar', clmp((t - 10) / 40 * 100, 0, 100));
 
       // BME280 cells
-      setCell('bc-hum-cell',  'bc-hum',  'bc-hum-b',  h.toFixed(1),  ev.hum(h));
+      setCell('bc-hum-cell', 'bc-hum', 'bc-hum-b', h.toFixed(1), ev.hum(h));
       setCell('bc-pres-cell', 'bc-pres', 'bc-pres-b', pr.toFixed(0), ev.pres(pr));
-      setCell('bc-alt-cell',  'bc-alt',  'bc-alt-b',  al.toFixed(0), { c: 'ok', t: 'fijo' });
+      setCell('bc-alt-cell', 'bc-alt', 'bc-alt-b', al.toFixed(0), { c: 'ok', t: 'fijo' });
 
       // BME680
       const rg = ev.gas(g);
@@ -1544,9 +1581,9 @@
       el.id = 'zc-' + zid; el.className = 'zone-card ' + w; el.dataset.topic = topic;
       el.innerHTML = `<div class="zc-head"><div class="zc-name">${name}</div><span class="zc-pill ${w}" id="zp-${zid}">${w === 'crit' ? 'Crítico' : w === 'warn' ? 'Alerta' : 'Normal'}</span></div>
   <div class="zc-nums">
-    <div class="zc-n"><div class="zc-v ${ev.temp(d.temp_c||0).c}" id="zt-${zid}">${(d.temp_c||0).toFixed(1)}</div><div class="zc-u">°C</div></div>
-    <div class="zc-n"><div class="zc-v ${ev.hum(d.humidity||0).c}" id="zh-${zid}">${(d.humidity||0).toFixed(0)}</div><div class="zc-u">%HR</div></div>
-    <div class="zc-n"><div class="zc-v ${ev.noise(d.noise_db||0).c}" id="zn-${zid}">${(d.noise_db||0).toFixed(0)}</div><div class="zc-u">dB</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.temp(d.temp_c || 0).c}" id="zt-${zid}">${(d.temp_c || 0).toFixed(1)}</div><div class="zc-u">°C</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.hum(d.humidity || 0).c}" id="zh-${zid}">${(d.humidity || 0).toFixed(0)}</div><div class="zc-u">%HR</div></div>
+    <div class="zc-n"><div class="zc-v ${ev.noise(d.noise_db || 0).c}" id="zn-${zid}">${(d.noise_db || 0).toFixed(0)}</div><div class="zc-u">dB</div></div>
   </div>`;
       el.addEventListener('click', () => setActive(topic));
       return el;
@@ -1557,9 +1594,9 @@
       const el = $('zc-' + zid);
       if (el) { el.className = 'zone-card ' + (active === topic ? 'active ' : '') + w; }
       const pp = $('zp-' + zid); if (pp) { pp.className = 'zc-pill ' + w; pp.textContent = w === 'crit' ? 'Crítico' : w === 'warn' ? 'Alerta' : 'Normal'; }
-      const tv = $('zt-' + zid); if (tv) { tv.textContent = (d.temp_c||0).toFixed(1); tv.className = 'zc-v ' + ev.temp(d.temp_c||0).c; }
-      const hv = $('zh-' + zid); if (hv) { hv.textContent = (d.humidity||0).toFixed(0); hv.className = 'zc-v ' + ev.hum(d.humidity||0).c; }
-      const nv = $('zn-' + zid); if (nv) { nv.textContent = (d.noise_db||0).toFixed(0); nv.className = 'zc-v ' + ev.noise(d.noise_db||0).c; }
+      const tv = $('zt-' + zid); if (tv) { tv.textContent = (d.temp_c || 0).toFixed(1); tv.className = 'zc-v ' + ev.temp(d.temp_c || 0).c; }
+      const hv = $('zh-' + zid); if (hv) { hv.textContent = (d.humidity || 0).toFixed(0); hv.className = 'zc-v ' + ev.hum(d.humidity || 0).c; }
+      const nv = $('zn-' + zid); if (nv) { nv.textContent = (d.noise_db || 0).toFixed(0); nv.className = 'zc-v ' + ev.noise(d.noise_db || 0).c; }
     }
 
     /* ═══ ALERTS ═══ */
@@ -1597,7 +1634,7 @@
 
     /* ═══ UPDATE FROM MQTT ═══ */
     function updateZone(topic, data) {
-      ['temp_c','humidity','pressure','altitude','gas_kohm','uv_index','noise_db'].forEach(k => data[k] = flt(data[k]));
+      ['temp_c', 'humidity', 'pressure', 'altitude', 'gas_kohm', 'uv_index', 'noise_db'].forEach(k => data[k] = flt(data[k]));
       zones[topic] = data;
 
       if (!zoneIds[topic]) {
@@ -1614,12 +1651,12 @@
       const name = ZONE_NAMES[topic] || data.node_id || topic;
       const zid = zoneIds[topic];
       const alerts = [];
-      [['Temperatura', (data.temp_c||0).toFixed(1)+'°C',   ev.temp(data.temp_c||0)],
-       ['Humedad',     (data.humidity||0).toFixed(0)+'%',   ev.hum(data.humidity||0)],
-       ['Presión',     (data.pressure||0).toFixed(0)+'hPa', ev.pres(data.pressure||0)],
-       ['VOC',         (data.gas_kohm||0).toFixed(1)+'kΩ',  ev.gas(data.gas_kohm||0)],
-       ['UV',          (data.uv_index||0).toFixed(2),        ev.uv(data.uv_index||0)],
-       ['Ruido',       (data.noise_db||0).toFixed(1)+'dB',   ev.noise(data.noise_db||0)]
+      [['Temperatura', (data.temp_c || 0).toFixed(1) + '°C', ev.temp(data.temp_c || 0)],
+      ['Humedad', (data.humidity || 0).toFixed(0) + '%', ev.hum(data.humidity || 0)],
+      ['Presión', (data.pressure || 0).toFixed(0) + 'hPa', ev.pres(data.pressure || 0)],
+      ['VOC', (data.gas_kohm || 0).toFixed(1) + 'kΩ', ev.gas(data.gas_kohm || 0)],
+      ['UV', (data.uv_index || 0).toFixed(2), ev.uv(data.uv_index || 0)],
+      ['Ruido', (data.noise_db || 0).toFixed(1) + 'dB', ev.noise(data.noise_db || 0)]
       ].forEach(([lbl, val, res]) => {
         if (res.c !== 'ok') alerts.push({ c: res.c, t: `${lbl} ${val} — ${res.t}` });
       });
@@ -1661,7 +1698,7 @@
       $('drawer-overlay').style.pointerEvents = 'none';
     });
     function mobileTab(tab) {
-      ['home','zones','alerts'].forEach(t => { const b = $('bn-'+t); if (b) b.classList.toggle('active', t === tab); });
+      ['home', 'zones', 'alerts'].forEach(t => { const b = $('bn-' + t); if (b) b.classList.toggle('active', t === tab); });
       if (tab === 'zones' || tab === 'alerts') { toggleDrawer(); setTimeout(() => mobileTab('home'), 350); }
     }
     function initMobile() {
@@ -1672,12 +1709,12 @@
 
     /* ═══ HISTORIAL SUPABASE ═══ */
     const CHART_DEFS = [
-      { key: 'temp_c',   label: 'Temperatura', unit: '°C', color: '#4facfe', dec: 1 },
-      { key: 'humidity', label: 'Humedad',      unit: '%',  color: '#43e5f7', dec: 1 },
-      { key: 'pressure', label: 'Presión',      unit: 'hPa',color: '#667eea', dec: 0 },
-      { key: 'uv_index', label: 'UV',           unit: '',   color: '#f6d365', dec: 2 },
-      { key: 'gas_kohm', label: 'VOC',          unit: 'kΩ', color: '#84fab0', dec: 1 },
-      { key: 'noise_db', label: 'Ruido',        unit: 'dB', color: '#a18cd1', dec: 1 },
+      { key: 'temp_c', label: 'Temperatura', unit: '°C', color: '#4facfe', dec: 1 },
+      { key: 'humidity', label: 'Humedad', unit: '%', color: '#43e5f7', dec: 1 },
+      { key: 'pressure', label: 'Presión', unit: 'hPa', color: '#667eea', dec: 0 },
+      { key: 'uv_index', label: 'UV', unit: '', color: '#f6d365', dec: 2 },
+      { key: 'gas_kohm', label: 'VOC', unit: 'kΩ', color: '#84fab0', dec: 1 },
+      { key: 'noise_db', label: 'Ruido', unit: 'dB', color: '#a18cd1', dec: 1 },
     ];
     const hCharts = {};
 
@@ -1687,18 +1724,18 @@
       if (st) st.textContent = 'consultando…';
       try {
         const since = new Date(Date.now() - SUPA.hours * 3600000).toISOString();
-        const url = SUPA.url + '/rest/v1/' + SUPA.table + '?select=fecha,temp_c,humidity,pressure,uv_index,gas_kohm,noise_db&fecha=gte.' + since + '&order=fecha.asc&limit=' + SUPA.limit;
+        const url = SUPA.url + '/rest/v1/' + SUPA.table + '?select=ts,temp_c,humidity,pressure,uv_index,gas_kohm,noise_db&ts=gte.' + since + '&order=ts.asc&limit=' + SUPA.limit;
         const res = await fetch(url, { headers: { 'apikey': SUPA.key, 'Authorization': 'Bearer ' + SUPA.key } });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const rows = await res.json();
         if (!rows || rows.length === 0) { if (st) st.textContent = 'sin datos aún'; renderEmptyCharts(); return; }
-        const labels = rows.map(r => { const d = new Date(r.fecha); return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' }); });
+        const labels = rows.map(r => { const d = new Date(r.ts); return d.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' }); });
         CHART_DEFS.forEach(def => {
           const vals = rows.map(r => { const v = parseFloat(r[def.key]); return isNaN(v) ? null : parseFloat(v.toFixed(def.dec)); });
           renderChart(def, labels, vals);
         });
         const last = rows[rows.length - 1];
-        const lt = new Date(last.fecha).toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+        const lt = new Date(last.ts).toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
         if (st) st.textContent = rows.length + ' registros · último ' + lt;
       } catch (e) { console.error(e); if (st) st.textContent = 'error al consultar'; }
       finally { if (btn) { btn.classList.remove('loading'); btn.textContent = '↻ actualizar'; } }
