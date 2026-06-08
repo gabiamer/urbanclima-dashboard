@@ -1429,7 +1429,7 @@
       <!-- ═══ HISTORIAL ═══ -->
       <div id="hist-area">
         <div class="hist-head">
-          <div class="hist-eyebrow">📈 Historial · últimas 2 horas <span id="hist-status">cargando…</span></div>
+          <div class="hist-eyebrow">📈 Historial · últimas 6 horas <span id="hist-status">cargando…</span></div>
           <button id="hist-btn" onclick="loadHistory()">↻ actualizar</button>
         </div>
         <div class="charts-row" id="charts-row"></div>
@@ -1455,7 +1455,7 @@
       key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9veWJidWJxbmdxenFubnFvbmRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4ODc5OTQsImV4cCI6MjA5NTQ2Mzk5NH0.YSLM75KSmLbGLd11BUk9sYTfd_r7yi7fP_3is2FUBIc",
       table: "lecturas",
       tsCol: "ts",   // ← nombre real de la columna timestamp
-      hours: 2,
+      hours: 6,
       limit: 500,
     };
 
@@ -1792,7 +1792,9 @@
     $('cur-date').textContent = '( ' + date() + ' )';
     connectMQTT();
     initMobile();
-    document.addEventListener('DOMContentLoaded', () => { loadHistory(); setInterval(loadHistory, 30000); });
+    // Llamar directo, sin esperar DOMContentLoaded
+    loadHistory();
+    setInterval(loadHistory, 30000);
   </script>
 </body>
 
